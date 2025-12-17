@@ -67,3 +67,29 @@ data/
 - Different Noto sub-fonts do not support exactly the same Unicode characters.
 - JP/KR include Kana or Hangul characters.
 - If full Unicode support is needed, the script can be modified.
+
+## 4. Models and Experiments
+
+### Best Model (`aml_final.py` & `aml_eval.py`)
+This is the final model used to generate the results in the report.
+- **Architecture**: `SimpleCNN`
+  - 3 Convolutional Blocks (Conv2d -> BatchNorm -> ReLU -> MaxPool)
+  - 2 Fully Connected Layers
+- **Data Split**: Random split (80% Training, 20% Testing)
+- **Preprocessing**: Resize to 64x64, Grayscale, Normalize (mean=0.5, std=0.5)
+- **Training**: 50 Epochs, Adam Optimizer (lr=1e-5), Batch Size 128
+
+### Other Experiments
+
+#### `cnn_mid_v2_1.ipynb`
+- **Architecture**: `MediumCNNPlus` (Deeper network with 4 Conv blocks and Global Average Pooling)
+- **Data Split**: Random split (80% Train, 10% Val, 10% Test)
+- **Preprocessing**: Resize to 64x64, No Normalization
+- **Training**: 15 Epochs, Adam Optimizer (lr=1e-3)
+
+#### `cnn_mid_v2_nonrd_1.ipynb`
+- **Architecture**: `MediumCNNPlus` (Same as above)
+- **Data Split**: **Stratified Split by Font Weight**
+  - Uses `split_by_weight_folders` to ensure balanced sampling from each font style/weight.
+  - Selects fixed number of samples (Train: 10000, Val: 1500, Test: 1500) per leaf folder.
+- **Purpose**: To test model performance when data is explicitly balanced across different font weights, avoiding potential bias from over-represented styles in a random split.
